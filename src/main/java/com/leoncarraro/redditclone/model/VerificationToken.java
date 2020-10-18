@@ -1,5 +1,6 @@
 package com.leoncarraro.redditclone.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -20,7 +21,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class VerificationToken {
+public class VerificationToken implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

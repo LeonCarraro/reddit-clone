@@ -1,5 +1,7 @@
 package com.leoncarraro.redditclone.model;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,7 +20,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class Vote {
+public class Vote implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
