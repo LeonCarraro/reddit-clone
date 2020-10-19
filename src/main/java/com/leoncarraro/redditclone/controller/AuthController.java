@@ -1,6 +1,7 @@
 package com.leoncarraro.redditclone.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,6 +23,12 @@ public class AuthController {
 	public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
 		authService.signup(registerRequest);
 		return ResponseEntity.ok("User succesfully registered!");
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/accountVerification/{token}")
+	public ResponseEntity<String> verifyAccount(@PathVariable String token) {
+		authService.verifyAccount(token);
+		return ResponseEntity.ok("User succesfully verified!");
 	}
 	
 }
