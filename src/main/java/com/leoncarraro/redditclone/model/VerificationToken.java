@@ -35,4 +35,12 @@ public class VerificationToken implements Serializable {
 	private String token;
 	private LocalDateTime expiryDate;
 	
+	public VerificationToken() {
+	}
+	
+	public VerificationToken(User user, String token) {
+		this.user = user;
+		this.token = token;
+	}
+	
 }

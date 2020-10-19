@@ -12,6 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.leoncarraro.redditclone.dto.RegisterRequest;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -39,5 +43,16 @@ public class User implements Serializable {
 	private String email;
 	private LocalDateTime createdDate;
 	private Boolean enabled;
+	
+	public User() {
+	}
+	
+	public User(RegisterRequest registerRequest, PasswordEncoder passwordEncoder) {
+		username = registerRequest.getUsername();
+		password = passwordEncoder.encode(registerRequest.getPassword());
+		email = registerRequest.getEmail();
+		createdDate = LocalDateTime.now();
+		enabled = false;
+	}
 	
 }
