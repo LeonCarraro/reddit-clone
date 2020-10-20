@@ -27,7 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable()
 				.authorizeRequests().antMatchers("/api/auth/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/api/subreddits").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/subreddits/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
 				.anyRequest().authenticated();
 		httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 	}

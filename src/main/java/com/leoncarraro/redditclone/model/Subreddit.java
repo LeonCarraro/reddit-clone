@@ -2,6 +2,7 @@ package com.leoncarraro.redditclone.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -46,7 +47,9 @@ public class Subreddit implements Serializable {
 	}
 
 	public Subreddit(SubredditCreateDto subredditCreateDto) {
+		user = null;
 		name = subredditCreateDto.getName();
+		posts = new ArrayList<>();
 		description = subredditCreateDto.getDescription();
 		createdDate = LocalDateTime.now();
 	}

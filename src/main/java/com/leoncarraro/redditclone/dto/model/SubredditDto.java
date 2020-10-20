@@ -15,13 +15,17 @@ public class SubredditDto implements Serializable {
     private Long id;
     private String name;
     private String description;
+    private Integer postCount;
     private LocalDateTime createdDate;
+    private String createdBy;
 
     public SubredditDto(Subreddit subreddit) {
         id = subreddit.getId();
         name = subreddit.getName();
         description = subreddit.getDescription();
+        postCount = subreddit.getPosts().size();
         createdDate = subreddit.getCreatedDate();
+        createdBy = null;  // TODO Implement createdBy
     }
 
 }

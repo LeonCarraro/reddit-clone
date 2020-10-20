@@ -13,6 +13,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.leoncarraro.redditclone.dto.model.PostCreateDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,5 +44,17 @@ public class Post implements Serializable {
 	private Integer voteCount;
 	private LocalDateTime createdDate;
 	private String url;
-	
+
+	public Post() {
+	}
+
+	public Post(PostCreateDto post) {
+		user = null;
+		title = post.getTitle();
+		content = post.getContent();
+		voteCount = 0;
+		createdDate = LocalDateTime.now();
+		url = post.getUrl();
+	}
+
 }

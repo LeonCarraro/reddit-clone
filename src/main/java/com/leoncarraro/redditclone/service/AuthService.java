@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,6 @@ import com.leoncarraro.redditclone.repository.UserRepository;
 import com.leoncarraro.redditclone.repository.VerificationTokenRepository;
 import com.leoncarraro.redditclone.security.JwtProvider;
 import com.leoncarraro.redditclone.service.exception.InvalidTokenException;
-import com.leoncarraro.redditclone.service.exception.UserNotFoundException;
 
 import lombok.AllArgsConstructor;
 
@@ -79,7 +79,7 @@ public class AuthService {
 	private void fetchUserAndEnable(VerificationToken verificationToken) {
 		String username = verificationToken.getUser().getUsername();
 		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UserNotFoundException("User not found with name - " + username));
+				.orElseThrow(() -> new UsernameNotFoundException("User not found with name - " + username));
 		
 		user.setEnabled(true);
 		userRepository.save(user);

@@ -4,6 +4,7 @@ import com.leoncarraro.redditclone.dto.model.SubredditCreateDto;
 import com.leoncarraro.redditclone.dto.model.SubredditDto;
 import com.leoncarraro.redditclone.model.Subreddit;
 import com.leoncarraro.redditclone.repository.SubredditRepository;
+import com.leoncarraro.redditclone.service.exception.SubredditNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +18,23 @@ public class SubredditService {
 
     private final SubredditRepository subredditRepository;
 
+    @Transactional(readOnly = true)
+    public List<SubredditDto> findAll() {
+        return toDto(subredditRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public SubredditDto findById(Long id) {
+        Subreddit subreddit = subredditRepository.findById(id)
+                .orElseThrow(() -> new SubredditNotFoundException("Subreddit not found! ID: " + id));
+        return toDto(subreddit);
+    }
+
     @Transactional
     public SubredditDto save(SubredditCreateDto subredditCreateDto) {
         Subreddit subreddit = new Subreddit(subredditCreateDto);
         subreddit = subredditRepository.save(subreddit);
         return toDto(subreddit);
-    }
-
-    @Transactional(readOnly = true)
-    public List<SubredditDto> findAll() {
-        return toDto(subredditRepository.findAll());
     }
 
     private SubredditDto toDto(Subreddit subreddit) {
