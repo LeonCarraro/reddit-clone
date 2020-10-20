@@ -30,12 +30,9 @@ public class AuthService {
 
 	private final PasswordEncoder passwordEncoder;
 	private final MailService mailService;
-	
 	private final UserRepository userRepository;
 	private final VerificationTokenRepository verificationTokenRepository;
-	
 	private final AuthenticationManager authenticationManager;
-	
 	private final JwtProvider jwtProvider;
 	
 	@Transactional
@@ -51,7 +48,8 @@ public class AuthService {
 				"Thank you for signing up to Reddit clone, please click on the below URL to activate your account: " +
 					"http://localhost:8080/api/auth/accountVerification/" + token));
 	}
-	
+
+	@Transactional
 	public void verifyAccount(String token) {
 		VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
 				.orElseThrow(() -> new InvalidTokenException("Invalid token!"));
@@ -77,8 +75,7 @@ public class AuthService {
 		
 		return token;
 	}
-	
-	@Transactional
+
 	private void fetchUserAndEnable(VerificationToken verificationToken) {
 		String username = verificationToken.getUser().getUsername();
 		User user = userRepository.findByUsername(username)

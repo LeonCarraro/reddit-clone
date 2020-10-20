@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.leoncarraro.redditclone.dto.model.SubredditCreateDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,5 +41,14 @@ public class Subreddit implements Serializable {
 	private String name;
 	private String description;
 	private LocalDateTime createdDate;
-	
+
+	public Subreddit() {
+	}
+
+	public Subreddit(SubredditCreateDto subredditCreateDto) {
+		name = subredditCreateDto.getName();
+		description = subredditCreateDto.getDescription();
+		createdDate = LocalDateTime.now();
+	}
+
 }
