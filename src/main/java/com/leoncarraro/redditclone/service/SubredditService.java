@@ -19,19 +19,19 @@ public class SubredditService {
     private final SubredditRepository subredditRepository;
 
     @Transactional(readOnly = true)
-    public List<SubredditDto> findAll() {
+    public List<SubredditDto> getAllSubreddits() {
         return toDto(subredditRepository.findAll());
     }
 
     @Transactional(readOnly = true)
-    public SubredditDto findById(Long id) {
+    public SubredditDto getOneSubreddit(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
                 .orElseThrow(() -> new SubredditNotFoundException("Subreddit not found! ID: " + id));
         return toDto(subreddit);
     }
 
     @Transactional
-    public SubredditDto save(SubredditCreateDto subredditCreateDto) {
+    public SubredditDto createSubreddit(SubredditCreateDto subredditCreateDto) {
         Subreddit subreddit = new Subreddit(subredditCreateDto);
         subreddit = subredditRepository.save(subreddit);
         return toDto(subreddit);

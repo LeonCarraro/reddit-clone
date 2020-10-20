@@ -2,6 +2,7 @@ package com.leoncarraro.redditclone.service;
 
 import java.util.UUID;
 
+import com.leoncarraro.redditclone.service.exception.UserNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -79,7 +80,7 @@ public class AuthService {
 	private void fetchUserAndEnable(VerificationToken verificationToken) {
 		String username = verificationToken.getUser().getUsername();
 		User user = userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found with name - " + username));
+				.orElseThrow(() -> new UserNotFoundException("User with name " + username + " not found!"));
 		
 		user.setEnabled(true);
 		userRepository.save(user);

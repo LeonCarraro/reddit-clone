@@ -21,17 +21,27 @@ public class PostController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<PostDto>> getAllPosts() {
-        return ResponseEntity.ok(postService.findAll());
+        return ResponseEntity.ok(postService.getAllPosts());
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<PostDto> getOnePost(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.findById(id));
+        return ResponseEntity.ok(postService.getOnePost(id));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/by-subreddit/{id}")
+    public ResponseEntity<List<PostDto>> getAllPostsBySubreddit(@PathVariable Long id) {
+        return ResponseEntity.ok(postService.getAllPostsBySubreddit(id));
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/by-user/{username}")
+    public ResponseEntity<List<PostDto>> getAllPostsByUser(@PathVariable String username) {
+        return ResponseEntity.ok(postService.getAllPostsByUser(username));
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<PostDto> createPost(@RequestBody PostCreateDto postCreateDto) {
-        PostDto PostDto = postService.save(postCreateDto);
+        PostDto PostDto = postService.createPost(postCreateDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

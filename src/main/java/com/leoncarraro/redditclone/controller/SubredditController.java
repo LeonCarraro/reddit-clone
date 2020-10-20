@@ -20,17 +20,17 @@ public class SubredditController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<SubredditDto>> getAllSubreddits() {
-        return ResponseEntity.ok(subredditService.findAll());
+        return ResponseEntity.ok(subredditService.getAllSubreddits());
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     public ResponseEntity<SubredditDto> getOneSubreddit(@PathVariable Long id) {
-        return ResponseEntity.ok(subredditService.findById(id));
+        return ResponseEntity.ok(subredditService.getOneSubreddit(id));
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<SubredditDto> createSubreddit(@RequestBody SubredditCreateDto subredditCreateDto) {
-        SubredditDto subredditDto = subredditService.save(subredditCreateDto);
+        SubredditDto subredditDto = subredditService.createSubreddit(subredditCreateDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
