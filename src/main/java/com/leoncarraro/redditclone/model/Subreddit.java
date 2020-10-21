@@ -46,9 +46,10 @@ public class Subreddit implements Serializable {
 	public Subreddit() {
 	}
 
-	public Subreddit(SubredditCreateDto subredditCreateDto) {
-		name = subredditCreateDto.getName();
+	public Subreddit(SubredditCreateDto subredditCreateDto, User user) {
+		this.user = user;
 		posts = new ArrayList<>();
+		name = subredditCreateDto.getName();
 		description = subredditCreateDto.getDescription();
 		createdDate = LocalDateTime.now();
 	}

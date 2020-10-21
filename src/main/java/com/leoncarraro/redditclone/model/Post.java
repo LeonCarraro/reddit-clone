@@ -48,7 +48,9 @@ public class Post implements Serializable {
 	public Post() {
 	}
 
-	public Post(PostCreateDto post) {
+	public Post(PostCreateDto post, User user, Subreddit subreddit) {
+		this.user = user;
+		this.subreddit = subreddit;
 		title = post.getTitle();
 		content = post.getContent();
 		voteCount = 0;

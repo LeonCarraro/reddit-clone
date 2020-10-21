@@ -30,15 +30,18 @@ public class SubredditService {
     public SubredditDto getOneSubreddit(Long id) {
         Subreddit subreddit = subredditRepository.findById(id)
                 .orElseThrow(() -> new SubredditNotFoundException("Subreddit not found! ID: " + id));
+
         return toDto(subreddit);
     }
 
     @Transactional
     public SubredditDto createSubreddit(SubredditCreateDto subredditCreateDto) {
-        Subreddit subreddit = new Subreddit(subredditCreateDto);
         User user = authService.getCurrentUser();
-        subreddit.setUser(user);
+
+        Subreddit subreddit = new Subreddit(subredditCreateDto, user);
+
         subreddit = subredditRepository.save(subreddit);
+
         return toDto(subreddit);
     }
 

@@ -61,15 +61,11 @@ public class PostService {
 
     @Transactional
     public PostDto createPost(PostCreateDto postCreateDto) {
-        Post post = new Post(postCreateDto);
-
-        Subreddit subreddit = subredditRepository.findById(postCreateDto.getSubredditId())
-                .orElseThrow(() -> new BadRequestException("Subreddit not found! ID: " +
-                        postCreateDto.getSubredditId()));
         User user = authService.getCurrentUser();
+        Subreddit subreddit = subredditRepository.findById(postCreateDto.getSubredditId())
+                .orElseThrow(() -> new BadRequestException("Subreddit not found! ID: " + postCreateDto.getSubredditId()));
 
-        post.setSubreddit(subreddit);
-        post.setUser(user);
+        Post post = new Post(postCreateDto, user, subreddit);
 
         post = postRepository.save(post);
 

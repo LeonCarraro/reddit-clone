@@ -48,14 +48,11 @@ public class CommentService {
 
     @Transactional
     public CommentDto createComment(CommentCreateDto commentCreateDto) {
-        Comment comment = new Comment(commentCreateDto);
-
         User user = authService.getCurrentUser();
         Post post = postRepository.findById(commentCreateDto.getPostId())
                 .orElseThrow(() -> new BadRequestException("Post not found! ID: " + commentCreateDto.getPostId()));
 
-        comment.setUser(user);
-        comment.setPost(post);
+        Comment comment = new Comment(commentCreateDto, user, post);
 
         comment = commentRepository.save(comment);
 

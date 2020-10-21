@@ -43,7 +43,9 @@ public class Comment implements Serializable {
 	public Comment() {
 	}
 
-	public Comment(CommentCreateDto comment) {
+	public Comment(CommentCreateDto comment, User user, Post post) {
+		this.user = user;
+		this.post = post;
 		content = comment.getContent();
 		createdDate = LocalDateTime.now();
 	}
