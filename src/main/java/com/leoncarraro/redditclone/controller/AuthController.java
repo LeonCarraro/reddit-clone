@@ -1,5 +1,6 @@
 package com.leoncarraro.redditclone.controller;
 
+import com.leoncarraro.redditclone.dto.RefreshTokenRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,8 +36,18 @@ public class AuthController {
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/login")
 	public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) {
-		AuthenticationResponse authenticationResponse = authService.login(loginRequest);
-		return ResponseEntity.ok(authenticationResponse);
+		return ResponseEntity.ok(authService.login(loginRequest));
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/refresh-token")
+	public ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+		return ResponseEntity.ok(authService.refreshToken(refreshTokenRequest));
+	}
+
+	@RequestMapping(method = RequestMethod.POST, value = "/logout")
+	public ResponseEntity<String> logout(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+		authService.logout(refreshTokenRequest);
+		return ResponseEntity.ok("Refresh token succesfully deleted!");
 	}
 	
 }

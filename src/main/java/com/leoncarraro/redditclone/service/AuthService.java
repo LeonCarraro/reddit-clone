@@ -1,7 +1,9 @@
 package com.leoncarraro.redditclone.service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.leoncarraro.redditclone.dto.RefreshTokenRequest;
 import com.leoncarraro.redditclone.service.exception.UserNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,9 +19,9 @@ import com.leoncarraro.redditclone.dto.LoginRequest;
 import com.leoncarraro.redditclone.dto.RegisterRequest;
 import com.leoncarraro.redditclone.model.NotificationEmail;
 import com.leoncarraro.redditclone.model.User;
-import com.leoncarraro.redditclone.model.VerificationToken;
+import com.leoncarraro.redditclone.model.UserVerificationToken;
 import com.leoncarraro.redditclone.repository.UserRepository;
-import com.leoncarraro.redditclone.repository.VerificationTokenRepository;
+import com.leoncarraro.redditclone.repository.UserVerificationTokenRepository;
 import com.leoncarraro.redditclone.security.JwtProvider;
 import com.leoncarraro.redditclone.service.exception.InvalidTokenException;
 
@@ -34,9 +36,10 @@ public class AuthService {
 	private final JwtProvider jwtProvider;
 
 	private final MailService mailService;
+	private final RefreshTokenService refreshTokenService;
 
 	private final UserRepository userRepository;
-	private final VerificationTokenRepository verificationTokenRepository;
+	private final UserVerificationTokenRepository userVerificationTokenRepository;
 	
 	@Transactional
 	public void signup(RegisterRequest registerRequest) {
@@ -54,10 +57,19 @@ public class AuthService {
 
 	@Transactional
 	public void verifyAccount(String token) {
-		VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+		UserVerificationToken userVerificationToken = userVerificationTokenRepository.findByToken(token)
 				.orElseThrow(() -> new InvalidTokenException("Invalid token!"));
 		
-		fetchUserAndEnable(verificationToken);
+		fetchUserAndEnable(userVerificationToken);
+	}
+
+	@Transactional(readOnly = true)
+	public User getCurrentUser() {
+		org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+
+		return userRepository.findByUsername(principal.getUsername())
+				.orElseThrow(() -> new UsernameNotFoundException("User with name " + principal.getUsername() + " not found!"));
 	}
 	
 	public AuthenticationResponse login(LoginRequest loginRequest) {
@@ -67,29 +79,40 @@ public class AuthService {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		String authenticationToken = jwtProvider.generateToken(authentication);
-		
-		return new AuthenticationResponse(authenticationToken, loginRequest);
+		Long jwtExpirationTime = jwtProvider.getJwtExpirationTime();
+
+		return new AuthenticationResponse(authenticationToken,
+				refreshTokenService.generateRefreshToken().getToken(),
+				LocalDateTime.now().plusMinutes(jwtExpirationTime / 60000L),
+				loginRequest);
 	}
 
-	@Transactional(readOnly = true)
-	public User getCurrentUser() {
-		org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder
-				.getContext().getAuthentication().getPrincipal();
+	public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+		refreshTokenService.validateRefreshToken(refreshTokenRequest.getRefreshToken());
 
-		return userRepository.findByUsername(principal.getUsername())
-			.orElseThrow(() -> new UsernameNotFoundException("User with name " + principal.getUsername() + " not found!"));
+		String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
+		Long jwtExpirationTime = jwtProvider.getJwtExpirationTime();
+
+		return new AuthenticationResponse(token,
+				refreshTokenRequest.getRefreshToken(),
+				LocalDateTime.now().plusMinutes(jwtExpirationTime / 60000L),
+				refreshTokenRequest.getUsername());
+	}
+
+	public void logout(RefreshTokenRequest refreshTokenRequest) {
+		refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
 	}
 	
 	private String generateVerificationToken(User user) {
 		String token = UUID.randomUUID().toString();
-		VerificationToken verificationToken = new VerificationToken(user, token);
-		verificationTokenRepository.save(verificationToken);
+		UserVerificationToken userVerificationToken = new UserVerificationToken(user, token);
+		userVerificationTokenRepository.save(userVerificationToken);
 		
 		return token;
 	}
 
-	private void fetchUserAndEnable(VerificationToken verificationToken) {
-		String username = verificationToken.getUser().getUsername();
+	private void fetchUserAndEnable(UserVerificationToken userVerificationToken) {
+		String username = userVerificationToken.getUser().getUsername();
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(() -> new UserNotFoundException("User with name " + username + " not found!"));
 		

@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.time.Instant;
+import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
 import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,10 @@ import io.jsonwebtoken.Jwts;
 public class JwtProvider {
 	
 	private KeyStore keyStore;
-	
+
+	@Value(value = "${jwt.expiration.time}")
+	private Long jwtExpirationTime;
+
 	@PostConstruct
 	public void init() {
 		try {
@@ -37,6 +43,16 @@ public class JwtProvider {
 		return Jwts.builder()
 			.setSubject(principal.getUsername())
 			.signWith(getPrivateKey())
+			.setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationTime)))
+			.compact();
+	}
+
+	public String generateTokenWithUsername(String username) {
+		return Jwts.builder()
+			.setSubject(username)
+			.setIssuedAt(Date.from(Instant.now()))
+			.signWith(getPrivateKey())
+			.setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationTime)))
 			.compact();
 	}
 
@@ -52,6 +68,10 @@ public class JwtProvider {
 				.getBody();
 
 		return claims.getSubject();
+	}
+
+	public Long getJwtExpirationTime() {
+		return jwtExpirationTime;
 	}
 	
 	private PrivateKey getPrivateKey() {

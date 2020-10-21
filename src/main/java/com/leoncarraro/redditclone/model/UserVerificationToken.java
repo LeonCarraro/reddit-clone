@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class VerificationToken implements Serializable {
+public class UserVerificationToken implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -35,10 +35,10 @@ public class VerificationToken implements Serializable {
 	private String token;
 	private LocalDateTime expiryDate;
 	
-	public VerificationToken() {
+	public UserVerificationToken() {
 	}
 	
-	public VerificationToken(User user, String token) {
+	public UserVerificationToken(User user, String token) {
 		this.user = user;
 		this.token = token;
 	}
