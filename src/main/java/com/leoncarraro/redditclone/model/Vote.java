@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.leoncarraro.redditclone.dto.model.VoteCreateDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,5 +37,14 @@ public class Vote implements Serializable {
 	private User user;
 	
 	private VoteType voteType;
+
+	public Vote() {
+	}
+
+	public Vote(VoteCreateDto vote, Post post, User user) {
+		this.post = post;
+		this.user = user;
+		voteType = vote.getVoteType();
+	}
 	
 }

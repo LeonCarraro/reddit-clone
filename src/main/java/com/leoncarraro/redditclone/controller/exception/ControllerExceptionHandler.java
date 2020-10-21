@@ -1,9 +1,6 @@
 package com.leoncarraro.redditclone.controller.exception;
 
-import com.leoncarraro.redditclone.service.exception.BadRequestException;
-import com.leoncarraro.redditclone.service.exception.PostNotFoundException;
-import com.leoncarraro.redditclone.service.exception.SubredditNotFoundException;
-import com.leoncarraro.redditclone.service.exception.UserNotFoundException;
+import com.leoncarraro.redditclone.service.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,8 +12,8 @@ import java.util.Arrays;
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-    @ExceptionHandler(value = { BadRequestException.class })
-    public ResponseEntity<StandardError> badRequestExceptionHandler(BadRequestException e) {
+    @ExceptionHandler(value = { BadRequestException.class, RepeatedVoteException.class})
+    public ResponseEntity<StandardError> badRequestExceptionHandler(RuntimeException e) {
         StandardError error = new StandardError(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
