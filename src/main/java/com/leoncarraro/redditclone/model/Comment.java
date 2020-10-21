@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.leoncarraro.redditclone.dto.model.CommentCreateDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,5 +39,13 @@ public class Comment implements Serializable {
 	
 	private String content;
 	private LocalDateTime createdDate;
-	
+
+	public Comment() {
+	}
+
+	public Comment(CommentCreateDto comment) {
+		content = comment.getContent();
+		createdDate = LocalDateTime.now();
+	}
+
 }

@@ -30,6 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests().antMatchers("/api/auth/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/subreddits/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/api/comments/**").permitAll()
 				.anyRequest().authenticated()
 				.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
