@@ -28,7 +28,7 @@ public class PostDto implements Serializable {
         voteCount = post.getVoteCount();
         createdDate = post.getCreatedDate();
         url = post.getUrl();
-        createdBy = null;  // TODO Implemnt createdBy
+        createdBy = post.getUser() == null ? "Unknown" : post.getUser().getUsername();
         subredditName = post.getSubreddit().getName();
     }
 

@@ -25,7 +25,7 @@ public class SubredditDto implements Serializable {
         description = subreddit.getDescription();
         postCount = subreddit.getPosts().size();
         createdDate = subreddit.getCreatedDate();
-        createdBy = null;  // TODO Implement createdBy
+        createdBy = subreddit.getUser() == null ? "Unknown" : subreddit.getUser().getUsername();
     }
 
 }

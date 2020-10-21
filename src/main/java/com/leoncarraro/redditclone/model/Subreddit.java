@@ -47,7 +47,6 @@ public class Subreddit implements Serializable {
 	}
 
 	public Subreddit(SubredditCreateDto subredditCreateDto) {
-		user = null;
 		name = subredditCreateDto.getName();
 		posts = new ArrayList<>();
 		description = subredditCreateDto.getDescription();

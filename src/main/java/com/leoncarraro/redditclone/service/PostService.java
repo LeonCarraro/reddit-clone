@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PostService {
 
+    private final AuthService authService;
+
     private final PostRepository postRepository;
     private final SubredditRepository subredditRepository;
     private final UserRepository userRepository;
@@ -64,7 +66,10 @@ public class PostService {
         Subreddit subreddit = subredditRepository.findById(postCreateDto.getSubredditId())
                 .orElseThrow(() -> new BadRequestException("Subreddit not found! ID: " +
                         postCreateDto.getSubredditId()));
+        User user = authService.getCurrentUser();
+
         post.setSubreddit(subreddit);
+        post.setUser(user);
 
         post = postRepository.save(post);
 

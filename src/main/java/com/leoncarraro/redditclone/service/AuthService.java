@@ -30,11 +30,13 @@ import lombok.AllArgsConstructor;
 public class AuthService {
 
 	private final PasswordEncoder passwordEncoder;
-	private final MailService mailService;
-	private final UserRepository userRepository;
-	private final VerificationTokenRepository verificationTokenRepository;
 	private final AuthenticationManager authenticationManager;
 	private final JwtProvider jwtProvider;
+
+	private final MailService mailService;
+
+	private final UserRepository userRepository;
+	private final VerificationTokenRepository verificationTokenRepository;
 	
 	@Transactional
 	public void signup(RegisterRequest registerRequest) {
@@ -67,6 +69,15 @@ public class AuthService {
 		String authenticationToken = jwtProvider.generateToken(authentication);
 		
 		return new AuthenticationResponse(authenticationToken, loginRequest);
+	}
+
+	@Transactional(readOnly = true)
+	public User getCurrentUser() {
+		org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+
+		return userRepository.findByUsername(principal.getUsername())
+			.orElseThrow(() -> new UsernameNotFoundException("User with name " + principal.getUsername() + " not found!"));
 	}
 	
 	private String generateVerificationToken(User user) {

@@ -3,6 +3,7 @@ package com.leoncarraro.redditclone.service;
 import com.leoncarraro.redditclone.dto.model.SubredditCreateDto;
 import com.leoncarraro.redditclone.dto.model.SubredditDto;
 import com.leoncarraro.redditclone.model.Subreddit;
+import com.leoncarraro.redditclone.model.User;
 import com.leoncarraro.redditclone.repository.SubredditRepository;
 import com.leoncarraro.redditclone.service.exception.SubredditNotFoundException;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,8 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class SubredditService {
+
+    private final AuthService authService;
 
     private final SubredditRepository subredditRepository;
 
@@ -33,6 +36,8 @@ public class SubredditService {
     @Transactional
     public SubredditDto createSubreddit(SubredditCreateDto subredditCreateDto) {
         Subreddit subreddit = new Subreddit(subredditCreateDto);
+        User user = authService.getCurrentUser();
+        subreddit.setUser(user);
         subreddit = subredditRepository.save(subreddit);
         return toDto(subreddit);
     }

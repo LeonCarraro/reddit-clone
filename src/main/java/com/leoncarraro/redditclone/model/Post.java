@@ -49,7 +49,6 @@ public class Post implements Serializable {
 	}
 
 	public Post(PostCreateDto post) {
-		user = null;
 		title = post.getTitle();
 		content = post.getContent();
 		voteCount = 0;
